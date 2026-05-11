@@ -1,224 +1,1411 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simon Balanoff</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56,189,248,0.15);
-    }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Simon Balanoff — Software Engineer</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+            rel="stylesheet"
+        />
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Inter, system-ui, sans-serif;
-    }
+        <style>
+            :root {
+                --accent: #2563eb;
+                --accent-light: #dbeafe;
+                --accent-dark: #1d4ed8;
 
-    body {
-      background: radial-gradient(1200px 600px at 20% -10%, #1e293b, transparent),
-                  radial-gradient(800px 400px at 90% 10%, #0c4a6e, transparent),
-                  var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
+                --ink: #0f172a;
+                --ink-2: #334155;
+                --ink-3: #64748b;
+                --ink-4: #94a3b8;
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 64px 24px;
-    }
+                --bg: #fafaf8;
+                --surface: #ffffff;
+                --surface-2: #f1f5f9;
 
-    header {
-      margin-bottom: 64px;
-    }
+                --border: #e2e8f0;
+                --border-2: #cbd5e1;
 
-    header h1 {
-      font-size: clamp(2.5rem, 5vw, 3.5rem);
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
+                --font-display: "Syne", sans-serif;
+                --font-serif: "Instrument Serif", serif;
+                --font-mono: "DM Mono", monospace;
+                --font-body: "DM Sans", sans-serif;
 
-    header p {
-      color: var(--muted);
-      max-width: 600px;
-    }
+                --radius: 6px;
+                --radius-lg: 12px;
+            }
 
-    .links {
-      margin-top: 20px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+            body {
+                background: var(--bg);
+                color: var(--ink);
+                font-family: var(--font-body);
+                font-size: 16px;
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
 
-    .links a {
-      text-decoration: none;
-      color: var(--text);
-      background: var(--accent-soft);
-      border: 1px solid var(--accent);
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-weight: 600;
-      transition: transform 0.15s ease, background 0.15s ease;
-    }
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 200;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.1rem 3rem;
+                background: rgba(250, 250, 248, 0.88);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border);
+                transition: box-shadow 0.3s;
+            }
+            nav.scrolled {
+                box-shadow: 0 2px 24px rgba(15, 23, 42, 0.06);
+            }
 
-    .links a:hover {
-      transform: translateY(-2px);
-      background: var(--accent);
-      color: #020617;
-    }
+            .nav-logo {
+                font-family: var(--font-display);
+                font-size: 1rem;
+                font-weight: 800;
+                letter-spacing: -0.02em;
+                color: var(--ink);
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .nav-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: var(--accent);
+                display: inline-block;
+            }
 
-    section {
-      margin-bottom: 56px;
-    }
+            .nav-links {
+                display: flex;
+                gap: 1.75rem;
+                list-style: none;
+            }
+            .nav-links a {
+                font-family: var(--font-mono);
+                font-size: 0.72rem;
+                color: var(--ink-3);
+                text-decoration: none;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                transition: color 0.2s;
+            }
+            .nav-links a:hover {
+                color: var(--accent);
+            }
 
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
+            .nav-cta {
+                font-family: var(--font-mono);
+                font-size: 0.72rem;
+                font-weight: 500;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--surface) !important;
+                background: var(--ink);
+                padding: 0.55rem 1.25rem;
+                border-radius: var(--radius);
+                text-decoration: none;
+                transition:
+                    background 0.2s,
+                    transform 0.15s;
+            }
+            .nav-cta:hover {
+                background: var(--accent);
+                transform: translateY(-1px);
+            }
 
-    .about ul {
-      list-style: none;
-      display: grid;
-      gap: 12px;
-    }
+            #hero {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                padding: 0 3rem;
+                position: relative;
+                overflow: hidden;
+            }
+            .hero-grid {
+                position: absolute;
+                inset: 0;
+                background-image:
+                    linear-gradient(
+                        rgba(37, 99, 235, 0.05) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(37, 99, 235, 0.05) 1px,
+                        transparent 1px
+                    );
+                background-size: 64px 64px;
+                mask-image: radial-gradient(
+                    ellipse 90% 90% at 50% 40%,
+                    black 40%,
+                    transparent 100%
+                );
+            }
+            .hero-glow {
+                position: absolute;
+                top: -15%;
+                right: -10%;
+                width: 680px;
+                height: 680px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    rgba(37, 99, 235, 0.08) 0%,
+                    transparent 65%
+                );
+                pointer-events: none;
+            }
+            .hero-glow-2 {
+                position: absolute;
+                bottom: -10%;
+                left: -5%;
+                width: 420px;
+                height: 420px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    rgba(99, 102, 241, 0.06) 0%,
+                    transparent 70%
+                );
+                pointer-events: none;
+            }
 
-    .about li {
-      background: var(--card);
-      padding: 16px 20px;
-      border-radius: 14px;
-      border: 1px solid #1f2937;
-    }
+            .hero-inner {
+                position: relative;
+                max-width: 1100px;
+                width: 100%;
+                margin: 0 auto;
+                padding-top: 5.5rem;
+            }
 
-    .projects {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
+            .hero-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-family: var(--font-mono);
+                font-size: 0.72rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--accent);
+                background: var(--accent-light);
+                padding: 0.38rem 1rem;
+                border-radius: 999px;
+                margin-bottom: 2.5rem;
+            }
+            .hero-badge-pulse {
+                width: 6px;
+                height: 6px;
+                background: var(--accent);
+                border-radius: 50%;
+                animation: pulse 2s ease-in-out infinite;
+            }
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.5;
+                    transform: scale(0.8);
+                }
+            }
 
-    .project {
-      background: var(--card);
-      padding: 20px;
-      border-radius: 16px;
-      border: 1px solid #1f2937;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+            h1.hero-name {
+                font-family: var(--font-display);
+                font-size: clamp(4.5rem, 10vw, 9rem);
+                font-weight: 800;
+                line-height: 0.91;
+                letter-spacing: -0.045em;
+                color: var(--ink);
+                margin-bottom: 0.5rem;
+            }
+            .hero-name-accent {
+                font-family: var(--font-serif);
+                font-style: italic;
+                font-weight: 400;
+                color: var(--accent);
+                letter-spacing: -0.02em;
+            }
+            .hero-tagline {
+                font-family: var(--font-display);
+                font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+                font-weight: 800;
+                letter-spacing: -0.04em;
+                color: var(--ink-3);
+                line-height: 1;
+                margin-bottom: 2.5rem;
+            }
 
-    .project a {
-      color: var(--accent);
-      font-weight: 600;
-      text-decoration: none;
-      margin-top: auto;
-    }
+            .hero-desc {
+                font-size: 1.05rem;
+                color: var(--ink-2);
+                max-width: 490px;
+                line-height: 1.8;
+                font-weight: 300;
+                margin-bottom: 2.75rem;
+            }
+            .hero-desc strong {
+                color: var(--ink);
+                font-weight: 500;
+            }
 
-    .project a:hover {
-      text-decoration: underline;
-    }
+            .hero-actions {
+                display: flex;
+                gap: 0.85rem;
+                flex-wrap: wrap;
+                margin-bottom: 3.5rem;
+            }
 
-    .tools {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+            .btn-primary {
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                font-weight: 500;
+                letter-spacing: 0.07em;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: #fff;
+                background: var(--accent);
+                padding: 0.9rem 2rem;
+                border-radius: var(--radius);
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition:
+                    background 0.2s,
+                    transform 0.15s;
+            }
+            .btn-primary:hover {
+                background: var(--accent-dark);
+                transform: translateY(-2px);
+            }
 
-    .tool {
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: #020617;
-      border: 1px solid #1f2937;
-      font-size: 0.9rem;
-    }
+            .btn-ghost {
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                font-weight: 400;
+                letter-spacing: 0.07em;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: var(--ink);
+                border: 1.5px solid var(--border-2);
+                padding: 0.9rem 2rem;
+                border-radius: var(--radius);
+                transition:
+                    border-color 0.2s,
+                    color 0.2s;
+            }
+            .btn-ghost:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
 
-    footer {
-      margin-top: 80px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Hi, I’m Simon 👋</h1>
-      <p>
-        Sophomore CS student at Colorado State University. I like systems,
-        full-stack projects, and building things that actually get used.
-      </p>
-      <div class="links">
-        <a href="https://github.com/simonbalanoff">GitHub</a>
-        <a href="https://www.linkedin.com/in/simon-balanoff-497452304/">LinkedIn</a>
-        <a href="mailto:simon.balanoff@colostate.edu">Email</a>
-      </div>
-    </header>
+            .hero-meta {
+                display: flex;
+                gap: 2.5rem;
+                flex-wrap: wrap;
+            }
+            .hero-meta-item {
+                display: flex;
+                flex-direction: column;
+                gap: 0.15rem;
+            }
+            .hero-meta-label {
+                font-family: var(--font-mono);
+                font-size: 0.6rem;
+                color: var(--ink-4);
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+            }
+            .hero-meta-value {
+                font-size: 0.88rem;
+                color: var(--ink-2);
+                font-weight: 400;
+            }
 
-    <section class="about">
-      <h2>What I’m About</h2>
-      <ul>
-        <li>🎓 Sophomore Computer Science student @ CSU</li>
-        <li>💻 President of the CSU ACM Chapter</li>
-        <li>🔥 Into systems programming & full-stack development</li>
-      </ul>
-    </section>
+            .wrap {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 7rem 3rem;
+            }
+            .alt-bg {
+                background: var(--surface);
+            }
 
-    <section>
-      <h2>Projects</h2>
-      <div class="projects">
-        <div class="project">
-          <strong>HB Website Solutions</strong>
-          <p>
-            Website and client dashboard for a Fort Collins web design agency
-            focused on helping local businesses grow online.
-          </p>
-          <a href="https://github.com/simonbalanoff/HB-Website-Solutions">View project →</a>
+            .section-tag {
+                font-family: var(--font-mono);
+                font-size: 0.67rem;
+                color: var(--accent);
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                margin-bottom: 0.6rem;
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+            }
+            .section-tag::before {
+                content: "";
+                display: block;
+                width: 18px;
+                height: 1.5px;
+                background: var(--accent);
+                border-radius: 2px;
+            }
+
+            h2.section-title {
+                font-family: var(--font-display);
+                font-size: clamp(2rem, 4.5vw, 3.2rem);
+                font-weight: 800;
+                letter-spacing: -0.035em;
+                line-height: 1;
+                margin-bottom: 3.5rem;
+                color: var(--ink);
+            }
+
+            .divider {
+                width: 100%;
+                height: 1px;
+                background: var(--border);
+            }
+
+            /* ── ABOUT ── */
+            .about-grid {
+                display: grid;
+                grid-template-columns: 1.1fr 0.9fr;
+                gap: 5rem;
+                align-items: start;
+            }
+            .about-body {
+                font-size: 1.05rem;
+                color: var(--ink-2);
+                line-height: 1.85;
+                font-weight: 300;
+            }
+            .about-body p + p {
+                margin-top: 1.25rem;
+            }
+            .about-body strong {
+                color: var(--ink);
+                font-weight: 500;
+            }
+
+            .stat-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            .stat-card {
+                background: var(--bg);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 1.75rem 1.5rem;
+                transition:
+                    border-color 0.25s,
+                    transform 0.25s;
+            }
+            .stat-card:hover {
+                border-color: var(--accent);
+                transform: translateY(-2px);
+            }
+            .stat-num {
+                font-family: var(--font-display);
+                font-size: 2.6rem;
+                font-weight: 800;
+                letter-spacing: -0.04em;
+                color: var(--accent);
+                line-height: 1;
+                margin-bottom: 0.35rem;
+            }
+            .stat-label {
+                font-family: var(--font-mono);
+                font-size: 0.65rem;
+                color: var(--ink-3);
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+            }
+
+            .exp-list {
+                display: flex;
+                flex-direction: column;
+            }
+            .exp-item {
+                display: grid;
+                grid-template-columns: 200px 1fr;
+                gap: 3rem;
+                padding: 2.75rem 0;
+                border-bottom: 1px solid var(--border);
+            }
+            .exp-item:last-child {
+                border-bottom: none;
+            }
+            .exp-item:first-child {
+                padding-top: 0;
+            }
+
+            .exp-dates {
+                font-family: var(--font-mono);
+                font-size: 0.67rem;
+                color: var(--ink-4);
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                padding-top: 0.3rem;
+            }
+            .exp-company {
+                font-family: var(--font-display);
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: var(--accent);
+                margin-top: 0.4rem;
+                letter-spacing: -0.01em;
+            }
+            .exp-role {
+                font-family: var(--font-display);
+                font-size: 1.35rem;
+                font-weight: 700;
+                letter-spacing: -0.025em;
+                color: var(--ink);
+                margin-bottom: 0.75rem;
+            }
+            .exp-desc {
+                font-size: 0.92rem;
+                color: var(--ink-2);
+                line-height: 1.8;
+                font-weight: 300;
+            }
+            .exp-desc ul {
+                padding-left: 1.2rem;
+            }
+            .exp-desc li {
+                margin-bottom: 0.35rem;
+            }
+            .exp-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                margin-top: 1rem;
+            }
+
+            .tag {
+                font-family: var(--font-mono);
+                font-size: 0.63rem;
+                letter-spacing: 0.07em;
+                text-transform: uppercase;
+                color: var(--accent);
+                background: var(--accent-light);
+                padding: 0.25rem 0.7rem;
+                border-radius: 999px;
+            }
+
+            .projects-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.25rem;
+            }
+
+            .project-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 2rem;
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                transition:
+                    border-color 0.25s,
+                    box-shadow 0.25s,
+                    transform 0.25s;
+            }
+            .project-card:hover {
+                border-color: var(--accent);
+                box-shadow: 0 8px 32px rgba(37, 99, 235, 0.1);
+                transform: translateY(-3px);
+            }
+            .project-card-top {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+            .project-title {
+                font-family: var(--font-display);
+                font-size: 1.2rem;
+                font-weight: 700;
+                letter-spacing: -0.02em;
+                color: var(--ink);
+                transition: color 0.2s;
+            }
+            .project-card:hover .project-title {
+                color: var(--accent);
+            }
+
+            .project-arrow {
+                width: 30px;
+                height: 30px;
+                flex-shrink: 0;
+                border-radius: 50%;
+                border: 1px solid var(--border-2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                color: var(--ink-3);
+                transition:
+                    background 0.2s,
+                    border-color 0.2s,
+                    color 0.2s;
+            }
+            .project-card:hover .project-arrow {
+                background: var(--accent);
+                border-color: var(--accent);
+                color: #fff;
+            }
+
+            .project-desc {
+                font-size: 0.88rem;
+                color: var(--ink-2);
+                line-height: 1.75;
+                font-weight: 300;
+                flex: 1;
+            }
+            .project-desc strong {
+                color: var(--ink);
+                font-weight: 500;
+            }
+
+            .project-bottom {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            .project-tech {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+            }
+            .project-repo {
+                font-family: var(--font-mono);
+                font-size: 0.6rem;
+                color: var(--ink-4);
+                text-decoration: none;
+                transition: color 0.2s;
+                white-space: nowrap;
+            }
+            .project-card:hover .project-repo {
+                color: var(--accent);
+            }
+
+            .skills-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.25rem;
+            }
+
+            .skill-group {
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 1.75rem 1.5rem;
+                background: var(--bg);
+                transition:
+                    border-color 0.25s,
+                    transform 0.25s;
+            }
+            .skill-group:hover {
+                border-color: var(--accent);
+                transform: translateY(-2px);
+            }
+
+            .skill-group-title {
+                font-family: var(--font-mono);
+                font-size: 0.63rem;
+                letter-spacing: 0.13em;
+                text-transform: uppercase;
+                color: var(--accent);
+                margin-bottom: 1.25rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .skill-group-title::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: var(--accent-light);
+            }
+
+            .skill-list {
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 0.65rem;
+            }
+            .skill-list li {
+                font-size: 0.88rem;
+                color: var(--ink-2);
+                font-weight: 300;
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+            }
+            .skill-list li::before {
+                content: "";
+                display: block;
+                width: 5px;
+                height: 5px;
+                background: var(--accent-light);
+                border: 1.5px solid var(--accent);
+                border-radius: 50%;
+                flex-shrink: 0;
+                transition: background 0.2s;
+            }
+            .skill-group:hover .skill-list li::before {
+                background: var(--accent);
+            }
+
+            .edu-list {
+                display: flex;
+                flex-direction: column;
+                gap: 1.15rem;
+            }
+
+            .edu-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 1.85rem 2.25rem;
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 2rem;
+                transition:
+                    border-color 0.25s,
+                    transform 0.25s;
+            }
+            .edu-card:hover {
+                border-color: var(--accent);
+                transform: translateY(-2px);
+            }
+
+            .edu-degree {
+                font-family: var(--font-display);
+                font-size: 1.15rem;
+                font-weight: 700;
+                letter-spacing: -0.02em;
+                color: var(--ink);
+                margin-bottom: 0.25rem;
+            }
+            .edu-school {
+                font-size: 0.88rem;
+                color: var(--ink-3);
+                font-weight: 300;
+                margin-bottom: 0.6rem;
+            }
+            .edu-pills {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+            }
+            .edu-pill {
+                font-family: var(--font-mono);
+                font-size: 0.62rem;
+                letter-spacing: 0.07em;
+                text-transform: uppercase;
+                color: var(--accent);
+                background: var(--accent-light);
+                padding: 0.22rem 0.65rem;
+                border-radius: 999px;
+            }
+            .edu-year {
+                font-family: var(--font-mono);
+                font-size: 0.67rem;
+                color: var(--ink-4);
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                white-space: nowrap;
+                flex-shrink: 0;
+                padding-top: 0.25rem;
+            }
+
+            .contact-section {
+                background: var(--ink);
+            }
+            .contact-section .section-tag {
+                color: #a5f3fc;
+            }
+            .contact-section .section-tag::before {
+                background: #a5f3fc;
+            }
+
+            .contact-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 5rem;
+                align-items: start;
+            }
+            .contact-heading {
+                font-family: var(--font-display);
+                font-size: clamp(2.4rem, 5vw, 3.8rem);
+                font-weight: 800;
+                letter-spacing: -0.04em;
+                line-height: 1;
+                color: #fff;
+                margin-bottom: 1.5rem;
+            }
+            .contact-heading em {
+                font-family: var(--font-serif);
+                font-style: italic;
+                font-weight: 400;
+                color: #e8ff47;
+            }
+            .contact-sub {
+                font-size: 0.95rem;
+                color: rgba(255, 255, 255, 0.4);
+                line-height: 1.8;
+                font-weight: 300;
+            }
+
+            .contact-links {
+                display: flex;
+                flex-direction: column;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: var(--radius-lg);
+                overflow: hidden;
+            }
+            .contact-link {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.35rem 1.75rem;
+                background: rgba(255, 255, 255, 0.04);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+                text-decoration: none;
+                color: #fff;
+                transition: background 0.2s;
+            }
+            .contact-link:last-child {
+                border-bottom: none;
+            }
+            .contact-link:hover {
+                background: rgba(255, 255, 255, 0.09);
+            }
+            .contact-link-label {
+                font-family: var(--font-mono);
+                font-size: 0.62rem;
+                color: rgba(255, 255, 255, 0.32);
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                margin-bottom: 0.2rem;
+            }
+            .contact-link-value {
+                font-size: 0.92rem;
+                color: rgba(255, 255, 255, 0.82);
+            }
+            .contact-link-arrow {
+                color: rgba(255, 255, 255, 0.25);
+                transition:
+                    color 0.2s,
+                    transform 0.2s;
+            }
+            .contact-link:hover .contact-link-arrow {
+                color: #e8ff47;
+                transform: translateX(3px);
+            }
+
+            footer {
+                background: var(--ink);
+                border-top: 1px solid rgba(255, 255, 255, 0.07);
+                padding: 1.75rem 3rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .footer-logo {
+                font-family: var(--font-display);
+                font-size: 0.9rem;
+                font-weight: 800;
+                color: rgba(255, 255, 255, 0.2);
+            }
+            .footer-copy {
+                font-family: var(--font-mono);
+                font-size: 0.62rem;
+                color: rgba(255, 255, 255, 0.18);
+                letter-spacing: 0.06em;
+            }
+
+            .fade-up {
+                opacity: 0;
+                transform: translateY(22px);
+                transition:
+                    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .fade-up.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            @media (max-width: 960px) {
+                nav {
+                    padding: 1rem 1.5rem;
+                }
+                .nav-links {
+                    display: none;
+                }
+                #hero,
+                .wrap {
+                    padding-left: 1.5rem;
+                    padding-right: 1.5rem;
+                }
+                .about-grid,
+                .contact-layout {
+                    grid-template-columns: 1fr;
+                    gap: 3rem;
+                }
+                .projects-grid {
+                    grid-template-columns: 1fr;
+                }
+                .skills-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+                .exp-item {
+                    grid-template-columns: 1fr;
+                    gap: 0.4rem;
+                }
+                footer {
+                    flex-direction: column;
+                    gap: 0.75rem;
+                    text-align: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- NAV -->
+        <nav id="main-nav">
+            <a href="#" class="nav-logo"
+                >Simon Balanoff <span class="nav-dot"></span
+            ></a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#contact" class="nav-cta">Contact</a></li>
+            </ul>
+        </nav>
+
+        <!-- HERO -->
+        <section id="hero">
+            <div class="hero-grid"></div>
+            <div class="hero-glow"></div>
+            <div class="hero-glow-2"></div>
+            <div class="hero-inner">
+                <div class="hero-badge">
+                    <span class="hero-badge-pulse"></span>
+                    Software Engineer · Full Stack Developer · Mobile Developer
+                </div>
+                <h1 class="hero-name">
+                    Simon <span class="hero-name-accent">Balanoff</span>
+                </h1>
+                <div class="hero-tagline">Building things that matter.</div>
+                <p class="hero-desc">
+                    CS student at Colorado State University specializing in
+                    <strong>AI &amp; Machine Learning</strong>. I build
+                    full-stack web and mobile apps with real-world applications.
+                </p>
+                <div class="hero-actions">
+                    <a href="#projects" class="btn-primary">See My Work →</a>
+                    <a
+                        href="https://github.com/simonbalanoff"
+                        target="_blank"
+                        class="btn-ghost"
+                        >GitHub ↗</a
+                    >
+                </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ABOUT -->
+        <div class="alt-bg" id="about">
+            <div class="wrap">
+                <div class="section-tag">01 — About</div>
+                <div class="about-grid">
+                    <div>
+                        <h2 class="section-title">Who I am</h2>
+                        <div class="about-body fade-up">
+                            <p>
+                                I'm a junior Computer Science student at
+                                Colorado State University, concentrating in
+                                <strong
+                                    >Artificial Intelligence &amp; Machine
+                                    Learning</strong
+                                >, with a minor in Business Administration.
+                            </p>
+                            <p>
+                                I've built production apps used by hundreds of
+                                people — from a mobile recruitment platform
+                                adopted by executive leadership, to a full-stack
+                                event site powering my ACM chapter. As
+                                <strong>ACM Chapter President</strong> I lead
+                                20+ members, organize hackathons, and coordinate
+                                events with faculty and industry professionals.
+                            </p>
+                            <p>
+                                I'm looking for internship and co-op
+                                opportunities where I can contribute to real
+                                products and keep learning fast.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="stat-grid fade-up">
+                        <div class="stat-card">
+                            <div class="stat-num">5+</div>
+                            <div class="stat-label">Years Programming</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-num">70+</div>
+                            <div class="stat-label">Students Led</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-num">120+</div>
+                            <div class="stat-label">App Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-num">3</div>
+                            <div class="stat-label">Apps Shipped</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="project">
-          <strong>CSU ACM Chapter</strong>
-          <p>
-            Tools, website, and infrastructure for workshops, hack nights,
-            and events connecting 200+ CS students.
-          </p>
-          <a href="https://github.com/simonbalanoff/ACMCSU">View project →</a>
+        <div class="divider"></div>
+
+        <!-- EXPERIENCE -->
+        <div id="experience">
+            <div class="wrap">
+                <div class="section-tag">02 — Experience</div>
+                <h2 class="section-title">Where I've worked</h2>
+                <div class="exp-list">
+                    <div class="exp-item fade-up">
+                        <div>
+                            <div class="exp-dates">Aug 2022 — May 2024</div>
+                            <div class="exp-company">COPE / KUMC</div>
+                        </div>
+                        <div>
+                            <div class="exp-role">Software Engineer Intern</div>
+                            <div class="exp-desc">
+                                <ul>
+                                    <li>
+                                        Built an Angular-based event planning
+                                        platform for healthcare outreach
+                                        initiatives at the University of Kansas
+                                        Medical Center.
+                                    </li>
+                                    <li>
+                                        Developed reusable Angular components
+                                        and integrated REST APIs for production
+                                        use.
+                                    </li>
+                                    <li>
+                                        Participated in Agile sprint cycles,
+                                        delivering production-ready features on
+                                        a live healthcare platform.
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="exp-tags">
+                                <span class="tag">Angular</span>
+                                <span class="tag">TypeScript</span>
+                                <span class="tag">REST APIs</span>
+                                <span class="tag">Agile</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exp-item fade-up">
+                        <div>
+                            <div class="exp-dates">May 2025 — Present</div>
+                            <div class="exp-company">ACM @ CSU</div>
+                        </div>
+                        <div>
+                            <div class="exp-role">President</div>
+                            <div class="exp-desc">
+                                <ul>
+                                    <li>
+                                        Lead chapter operations for CSU's ACM
+                                        chapter - 20+ active members and
+                                        growing.
+                                    </li>
+                                    <li>
+                                        Organize hackathons, workshops, and
+                                        bi-weekly technical events with faculty
+                                        and industry professionals.
+                                    </li>
+                                    <li>
+                                        Directed development of the chapter's
+                                        web platform (see Projects).
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="exp-tags">
+                                <span class="tag">Leadership</span>
+                                <span class="tag">Community Building</span>
+                                <span class="tag">Event Planning</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="project">
-          <strong>Resident Feedback</strong>
-          <p>
-            iOS and web platform for surgeons to evaluate residents with
-            secure role-based dashboards and a TypeScript API.
-          </p>
-          <a href="https://github.com/simonbalanoff/ResidentFeedback-App">View project →</a>
+        <div class="divider"></div>
+
+        <!-- PROJECTS -->
+        <div class="alt-bg" id="projects">
+            <div class="wrap">
+                <div class="section-tag">03 — Projects</div>
+                <h2 class="section-title">Things I've built</h2>
+                <div class="projects-grid">
+                    <a
+                        href="https://github.com/simonbalanoff/SigEpRush-App"
+                        target="_blank"
+                        class="project-card fade-up"
+                    >
+                        <div class="project-card-top">
+                            <div class="project-title">Rush Management App</div>
+                            <div class="project-arrow">↗</div>
+                        </div>
+                        <p class="project-desc">
+                            Full-stack mobile recruitment platform built with
+                            Swift, Node.js, MongoDB, and AWS S3. Supports
+                            <strong>120+ registered users</strong> with
+                            authentication, candidate scoring, and real-time
+                            updates. Adopted exclusively by executive leadership
+                            to replace manual spreadsheet workflows.
+                        </p>
+                        <div class="project-bottom">
+                            <div class="project-tech">
+                                <span class="tag">Swift</span>
+                                <span class="tag">Node.js</span>
+                                <span class="tag">MongoDB</span>
+                                <span class="tag">AWS S3</span>
+                            </div>
+                            <span class="project-repo"
+                                >github.com/simonbalanoff/SigEpRush-App</span
+                            >
+                        </div>
+                    </a>
+
+                    <a
+                        href="https://github.com/simonbalanoff/rocket-simulator"
+                        target="_blank"
+                        class="project-card fade-up"
+                    >
+                        <div class="project-card-top">
+                            <div class="project-title">Rocket Simulator</div>
+                            <div class="project-arrow">↗</div>
+                        </div>
+                        <p class="project-desc">2D rocket landing sim with a Kalman-filtered state estimator and multi-phase guidance controller.
+                            <strong>98% success rate</strong> over 100 Monte Carlo runs (σ = 50 px noise) and stable touchdown velocity (0.0 px/s on all successful landings).
+                        </p>
+                        <div class="project-bottom">
+                            <div class="project-tech">
+                                <span class="tag">Python</span>
+                                <span class="tag">Pygame</span>
+                                <span class="tag">Pymunk</span>
+                                <span class="tag">Kalman Filter</span>
+                            </div>
+                            <span class="project-repo"
+                                >github.com/simonbalanoff/rocket-simulator</span
+                            >
+                        </div>
+                    </a>
+
+                    <a
+                        href="https://github.com/simonbalanoff/ResidentFeedback-App"
+                        target="_blank"
+                        class="project-card fade-up"
+                    >
+                        <div class="project-card-top">
+                            <div class="project-title">Resident Feedback Platform</div>
+                            <div class="project-arrow">↗</div>
+                        </div>
+                        <p class="project-desc">
+                            iOS + backend platform for evaluating surgical residents, built in collaboration with <strong>KU Medical Center</strong>.
+                        </p>
+                        <div class="project-bottom">
+                            <div class="project-tech">
+                                <span class="tag">Swift</span>
+                                <span class="tag">MongoDB</span>
+                                <span class="tag">REST API</span>
+                                <span class="tag">Render</span>
+                            </div>
+                            <span class="project-repo"
+                                >github.com/simonbalanoff/ResidentFeedback-App</span
+                            >
+                        </div>
+                    </a>
+
+                    <a
+                        href="https://github.com/simonbalanoff/ACMCSU"
+                        target="_blank"
+                        class="project-card fade-up"
+                    >
+                        <div class="project-card-top">
+                            <div class="project-title">ACM Chapter Website</div>
+                            <div class="project-arrow">↗</div>
+                        </div>
+                        <p class="project-desc">
+                            Full-stack web application built with React and
+                            Node.js. A RESTful API syncs CSU RamLink events to a
+                            dynamic calendar used by
+                            <strong>20+ active members</strong>. Deployed via
+                            Vercel with CI/CD and integrated mailing list
+                            automation.
+                        </p>
+                        <div class="project-bottom">
+                            <div class="project-tech">
+                                <span class="tag">React</span>
+                                <span class="tag">Node.js</span>
+                                <span class="tag">REST API</span>
+                                <span class="tag">Vercel</span>
+                            </div>
+                            <span class="project-repo"
+                                >github.com/simonbalanoff/ACMCSU</span
+                            >
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
-      </div>
-    </section>
 
-    <section>
-      <h2>Languages & Tools</h2>
-      <div class="tools">
-        <div class="tool">TypeScript</div>
-        <div class="tool">Node.js</div>
-        <div class="tool">React</div>
-        <div class="tool">Angular</div>
-        <div class="tool">Java</div>
-        <div class="tool">C++</div>
-        <div class="tool">Python</div>
-        <div class="tool">Git</div>
-      </div>
-    </section>
+        <div class="divider"></div>
 
-    <footer>
-      Built by Simon · hosted on GitHub Pages
-    </footer>
-  </div>
-</body>
+        <!-- SKILLS -->
+        <div id="skills">
+            <div class="wrap">
+                <div class="section-tag">04 — Skills</div>
+                <h2 class="section-title">What I work with</h2>
+                <div class="skills-grid">
+                    <div class="skill-group fade-up">
+                        <div class="skill-group-title">Languages</div>
+                        <ul class="skill-list">
+                            <li>Java</li>
+                            <li>Python</li>
+                            <li>JavaScript / Node.js</li>
+                            <li>C++ / C#</li>
+                            <li>Swift</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group fade-up">
+                        <div class="skill-group-title">Frontend</div>
+                        <ul class="skill-list">
+                            <li>React</li>
+                            <li>Angular</li>
+                            <li>HTML / CSS</li>
+                            <li>REST API integration</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group fade-up">
+                        <div class="skill-group-title">Backend & Data</div>
+                        <ul class="skill-list">
+                            <li>Node.js</li>
+                            <li>MongoDB / Mongoose</li>
+                            <li>RESTful API design</li>
+                            <li>Authentication</li>
+                        </ul>
+                    </div>
+                    <div class="skill-group fade-up">
+                        <div class="skill-group-title">Tools & Infra</div>
+                        <ul class="skill-list">
+                            <li>Git / GitHub</li>
+                            <li>AWS S3</li>
+                            <li>Vercel / CI/CD</li>
+                            <li>Linux / macOS</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- EDUCATION -->
+        <div class="alt-bg" id="education">
+            <div class="wrap">
+                <div class="section-tag">05 — Education</div>
+                <h2 class="section-title">Where I studied</h2>
+                <div class="edu-list">
+                    <div class="edu-card fade-up">
+                        <div>
+                            <div class="edu-degree">B.S. Computer Science</div>
+                            <div class="edu-school">
+                                Colorado State University — Fort Collins,
+                                Colorado
+                            </div>
+                            <div class="edu-pills">
+                                <span class="edu-pill"
+                                    >AI &amp; Machine Learning</span
+                                >
+                                <span class="edu-pill"
+                                    >Minor: Business Administration</span
+                                >
+                                <span class="edu-pill">GPA: 3.59</span>
+                            </div>
+                        </div>
+                        <div class="edu-year">2024 — May 2028</div>
+                    </div>
+
+                    <div class="edu-card fade-up">
+                        <div>
+                            <div class="edu-degree">Recent Coursework</div>
+                            <div class="edu-school">
+                                Algorithms &amp; Theory · Software Development ·
+                                Data Structures · Calculus · Physics · Discrete Structures · Linear
+                                Algebra for Data Science · Computer Systems ·
+                                Statistics
+                            </div>
+                        </div>
+                        <div class="edu-year">Ongoing</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- CONTACT -->
+        <div class="contact-section" id="contact">
+            <div class="wrap">
+                <div class="section-tag">06 — Contact</div>
+                <div class="contact-layout">
+                    <div class="fade-up">
+                        <h2 class="contact-heading">
+                            Let's build something <em>great.</em>
+                        </h2>
+                        <p class="contact-sub">
+                            I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+                        </p>
+                    </div>
+                    <div class="contact-links fade-up">
+                        <a
+                            href="mailto:simon.balanoff@colostate.edu"
+                            class="contact-link"
+                        >
+                            <div>
+                                <div class="contact-link-label">Email</div>
+                                <div class="contact-link-value">
+                                    simon.balanoff@colostate.edu
+                                </div>
+                            </div>
+                            <span class="contact-link-arrow">→</span>
+                        </a>
+                        <a href="tel:9136021881" class="contact-link">
+                            <div>
+                                <div class="contact-link-label">Phone</div>
+                                <div class="contact-link-value">
+                                    (913) 602-1881
+                                </div>
+                            </div>
+                            <span class="contact-link-arrow">→</span>
+                        </a>
+                        <a
+                            href="https://github.com/simonbalanoff"
+                            target="_blank"
+                            class="contact-link"
+                        >
+                            <div>
+                                <div class="contact-link-label">GitHub</div>
+                                <div class="contact-link-value">
+                                    github.com/simonbalanoff
+                                </div>
+                            </div>
+                            <span class="contact-link-arrow">→</span>
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/simon-balanoff"
+                            target="_blank"
+                            class="contact-link"
+                        >
+                            <div>
+                                <div class="contact-link-label">LinkedIn</div>
+                                <div class="contact-link-value">
+                                    linkedin.com/in/simon-balanoff
+                                </div>
+                            </div>
+                            <span class="contact-link-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="footer-logo">SB.</div>
+            <div class="footer-copy">
+                © 2026 Simon Balanoff — Built with care
+            </div>
+        </footer>
+
+        <script>
+            // Nav shadow on scroll
+            const nav = document.getElementById("main-nav");
+            window.addEventListener(
+                "scroll",
+                () => {
+                    nav.classList.toggle("scrolled", window.scrollY > 20);
+                },
+                { passive: true },
+            );
+
+            // Scroll-triggered fade-ups with sibling staggering
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("visible");
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.1 },
+            );
+
+            document.querySelectorAll(".fade-up").forEach((el) => {
+                const siblings = el.parentElement.querySelectorAll(".fade-up");
+                if (siblings.length > 1) {
+                    const idx = Array.from(siblings).indexOf(el);
+                    el.style.transitionDelay = `${idx * 80}ms`;
+                }
+                observer.observe(el);
+            });
+        </script>
+    </body>
 </html>
