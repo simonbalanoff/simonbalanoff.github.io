@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowLeft, BriefcaseBusiness, Code2, FileText, Github, GraduationCap, Linkedin, Mail, Search, Sparkles, Terminal, UserRound, X } from 'lucide-react'
+import { ArrowLeft, BriefcaseBusiness, Code2, FileText, GraduationCap, Mail, Search, Sparkles, Terminal, UserRound, X } from 'lucide-react'
 import { experience, profile, projects, skills } from '../content/portfolio'
 import type { Project } from '../types'
 
@@ -238,8 +238,8 @@ export function SystemOS({ onClose }: SystemOSProps) {
         <button type="button" onClick={() => navigate('projects')} aria-label="Projects"><Code2 size={18} /></button>
         <button type="button" onClick={() => navigate('experience')} aria-label="Experience"><BriefcaseBusiness size={18} /></button>
         <button type="button" onClick={() => navigate('about')} aria-label="About"><UserRound size={18} /></button>
-        <a href={profile.links.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={18} /></a>
-        <a href={profile.links.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={18} /></a>
+        <a href={profile.links.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Code2 size={18} /></a>
+        <a href={profile.links.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><BriefcaseBusiness size={18} /></a>
         <a href={profile.links.email} aria-label="Email"><Mail size={18} /></a>
         <a href={profile.links.resume} aria-label="Resume"><FileText size={18} /></a>
       </div>

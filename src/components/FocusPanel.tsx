@@ -1,4 +1,4 @@
-import { ArrowLeft, Github, Linkedin, Mail } from 'lucide-react'
+import { ArrowLeft, BriefcaseBusiness, Code2, Mail } from 'lucide-react'
 import { profile, repertoire } from '../content/portfolio'
 import type { FocusTarget } from '../types'
 
@@ -46,8 +46,8 @@ export function FocusPanel({ focus, onBack }: FocusPanelProps) {
           <p>For internships, projects, research, ACM, or anything interesting enough to justify a message.</p>
           <div className="contact-links">
             <a href={profile.links.email}><Mail size={18} /> Email</a>
-            <a href={profile.links.github} target="_blank" rel="noreferrer"><Github size={18} /> GitHub</a>
-            <a href={profile.links.linkedin} target="_blank" rel="noreferrer"><Linkedin size={18} /> LinkedIn</a>
+            <a href={profile.links.github} target="_blank" rel="noreferrer"><Code2 size={18} /> GitHub</a>
+            <a href={profile.links.linkedin} target="_blank" rel="noreferrer"><BriefcaseBusiness size={18} /> LinkedIn</a>
           </div>
         </div>
       )}

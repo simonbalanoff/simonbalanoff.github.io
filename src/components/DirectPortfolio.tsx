@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail } from 'lucide-react'
+import { BriefcaseBusiness, Code2, Mail } from 'lucide-react'
 import { experience, profile, projects, skills } from '../content/portfolio'
 
 export function DirectPortfolio({ onClose }: { onClose: () => void }) {
@@ -11,8 +11,8 @@ export function DirectPortfolio({ onClose }: { onClose: () => void }) {
           <h1>I build software, communities, and whatever I need to learn next.</h1>
           <p>{profile.intro}</p>
           <div className="contact-links horizontal">
-            <a href={profile.links.github} target="_blank" rel="noreferrer"><Github size={17} /> GitHub</a>
-            <a href={profile.links.linkedin} target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn</a>
+            <a href={profile.links.github} target="_blank" rel="noreferrer"><Code2 size={17} /> GitHub</a>
+            <a href={profile.links.linkedin} target="_blank" rel="noreferrer"><BriefcaseBusiness size={17} /> LinkedIn</a>
             <a href={profile.links.email}><Mail size={17} /> Email</a>
           </div>
         </section>
