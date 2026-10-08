@@ -17,40 +17,31 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
-
       - name: Install dependencies
-        run: npm ci
-
+        run: npm install
       - name: Build
         run: npm run build
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist
-
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
-
     steps:
       - name: Deploy
         id: deployment

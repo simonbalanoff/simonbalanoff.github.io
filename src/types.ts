@@ -1,15 +1,11 @@
-export type FocusTarget = 'room' | 'monitor' | 'notebook' | 'music' | 'acm' | 'phone' | 'whiteboard'
-
 export type Project = {
+  id: string
   name: string
-  slug: string
   tagline: string
   description: string
   status: string
   stack: string[]
   highlights: string[]
-  github?: string
-  live?: string
 }
 
 export type Experience = {
@@ -18,4 +14,18 @@ export type Experience = {
   period: string
   description: string
   tags: string[]
+}
+
+export type AppId = 'about' | 'projects' | 'experience' | 'research' | 'resume' | 'contact' | 'terminal' | 'signal' | 'archive'
+
+export type WindowState = {
+  id: AppId
+  title: string
+  x: number
+  y: number
+  width: number
+  height: number
+  z: number
+  minimized: boolean
+  maximized: boolean
 }

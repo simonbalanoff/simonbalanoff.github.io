@@ -2,12 +2,10 @@ import type { Experience, Project } from '../types'
 
 export const profile = {
   name: 'Simon Balanoff',
-  title: 'Software Engineer · Computer Science · AI / ML',
-  shortTitle: 'Software Engineer',
-  location: 'Colorado',
+  title: 'Computer Science · AI/ML · Builder',
   school: 'Colorado State University',
   graduation: 'May 2028',
-  intro: 'I build software, lead technical communities, teach computer science, and chase ideas that are just difficult enough to be interesting.',
+  intro: 'I build software, lead technical communities, teach computer science, and keep chasing problems that are a little bigger than what I already know how to solve.',
   currently: [
     'Building Biddly',
     'Studying AI & Machine Learning',
@@ -16,114 +14,83 @@ export const profile = {
     'Exploring brain-computer interfaces'
   ],
   links: {
-    github: 'https://github.com/',
-    linkedin: 'https://www.linkedin.com/',
-    email: 'mailto:replace-me@example.com',
+    github: 'https://github.com/simonbalanoff',
+    linkedin: 'https://www.linkedin.com/in/REPLACE_ME',
+    email: 'mailto:REPLACE_ME@example.com',
     resume: '#'
   }
 }
 
 export const projects: Project[] = [
   {
+    id: 'biddly',
     name: 'Biddly',
-    slug: 'biddly',
-    tagline: 'Recruitment software built for real chapter workflows.',
-    description: 'A multi-tenant SaaS platform for fraternity and sorority recruitment with chapter-level configuration, candidate tracking, scoring, custom forms, events, roles, and invitations.',
-    status: 'Active development',
-    stack: ['TypeScript', 'Next.js', 'Fastify', 'PostgreSQL', 'Prisma', 'JWT'],
-    highlights: [
-      'Designed a multi-tenant data model around chapters and recruitment terms',
-      'Built configurable PNM forms, ratings, event tracking, roles, and invitation flows',
-      'Structured the app as a pnpm monorepo with shared contracts and database packages'
-    ]
+    tagline: 'Recruitment software designed like a modern product, not a spreadsheet.',
+    description: 'A multi-tenant SaaS platform for fraternity and sorority recruitment with chapter workspaces, configurable candidate forms, scoring, events, comments, invitations, and export workflows.',
+    status: 'ACTIVE',
+    stack: ['Next.js', 'TypeScript', 'Fastify', 'PostgreSQL', 'Prisma'],
+    highlights: ['Multi-tenant chapter architecture', 'Role-based chapter permissions', 'Custom recruitment forms and term workflows']
   },
   {
-    name: 'ResidentFeedback',
-    slug: 'resident-feedback',
-    tagline: 'A native iOS feedback system backed by a custom API.',
-    description: 'An iOS application and backend for capturing structured resident feedback and turning it into actionable data.',
-    status: 'Shipped',
-    stack: ['Swift', 'Node.js', 'Express', 'MongoDB', 'AWS S3'],
-    highlights: [
-      'Built the mobile client and supporting REST API',
-      'Implemented authentication and structured feedback workflows',
-      'Used cloud object storage for uploaded media'
-    ]
-  },
-  {
-    name: 'UML Visualizer',
-    slug: 'uml-visualizer',
-    tagline: 'Turning source structure into an explorable visual model.',
-    description: 'A developer tool focused on making software architecture easier to inspect through generated UML-style visualizations.',
-    status: 'Project',
-    stack: ['Java', 'Parsing', 'Graph Visualization'],
-    highlights: [
-      'Modeled relationships between software entities',
-      'Converted code structure into visual graph representations',
-      'Focused on clarity for larger object-oriented codebases'
-    ]
-  },
-  {
+    id: 'fuel',
     name: 'Fuel',
-    slug: 'fuel',
-    tagline: 'Nutrition tracking with consequences for missed goals.',
-    description: 'A premium-feeling nutrition and macro tracking concept designed around simple pricing, clean UX, and stronger behavioral accountability.',
-    status: 'Prototype',
+    tagline: 'A nutrition app that treats consistency like a system.',
+    description: 'An iOS-first calorie and macro tracker designed around simple daily goals, fast logging, and optional accountability mechanisms.',
+    status: 'EXPERIMENT',
     stack: ['Swift', 'iOS', 'APIs', 'Product Design'],
-    highlights: [
-      'Designed a low-friction calorie and macro tracking experience',
-      'Explored Screen Time integrations for user-defined accountability',
-      'Built toward a no-ads, no-subscription product model'
-    ]
+    highlights: ['Native iOS experience', 'Daily calorie and macro goals', 'Behavior-focused product ideas']
+  },
+  {
+    id: 'resident-feedback',
+    name: 'ResidentFeedback',
+    tagline: 'A full-stack feedback workflow for residents and staff.',
+    description: 'A client-facing application for collecting structured resident feedback with an iOS frontend and backend API.',
+    status: 'SHIPPED',
+    stack: ['Swift', 'Node.js', 'Express', 'MongoDB', 'JWT'],
+    highlights: ['Mobile-first interface', 'Authenticated API', 'End-to-end product ownership']
+  },
+  {
+    id: 'uml-visualizer',
+    name: 'UML Visualizer',
+    tagline: 'Turn program structure into something you can actually see.',
+    description: 'A developer tool focused on extracting and visualizing relationships in object-oriented code.',
+    status: 'BUILT',
+    stack: ['Java', 'Parsing', 'Visualization'],
+    highlights: ['Static code analysis', 'Relationship mapping', 'Developer-focused UX']
+  },
+  {
+    id: 'acm-site',
+    name: 'ACM @ CSU Website',
+    tagline: 'A useful home for a technical community.',
+    description: 'The web presence for CSU ACM, built around events, resources, officer information, projects, and student discovery.',
+    status: 'LIVE',
+    stack: ['Web', 'WordPress', 'Content Systems'],
+    highlights: ['Event discovery', 'Student resources', 'Organization identity']
   }
 ]
 
 export const experience: Experience[] = [
   {
+    role: 'COPE Software Engineering Intern',
+    organization: 'Summer 2026',
+    period: 'May 2026 — Aug 2026',
+    description: 'Worked in a production engineering environment using Angular and modern software development practices.',
+    tags: ['Angular', 'TypeScript', 'Software Engineering']
+  },
+  {
     role: 'President',
     organization: 'ACM @ Colorado State University',
-    period: '2025 — Present',
-    description: 'Lead the university ACM chapter, organize technical and career events, coordinate speakers, and build programming that connects students with the broader computing community.',
-    tags: ['Leadership', 'Community', 'Events']
+    period: 'May 2025 — Present',
+    description: 'Lead the student ACM chapter, organize technical and career events, coordinate speakers, and build community across the computer science department.',
+    tags: ['Leadership', 'Events', 'Community']
   },
   {
     role: 'Undergraduate Teaching Assistant',
     organization: 'CS 214 — Software Development',
     period: '2026 — Present',
-    description: 'Support students learning software design, Java, testing, debugging, and core development practices through labs, grading, and hands-on help.',
-    tags: ['Java', 'Teaching', 'Software Design']
-  },
-  {
-    role: 'Software Engineering Intern',
-    organization: 'COPE',
-    period: 'Summer 2026',
-    description: 'Worked on production web software with Angular and contributed to a professional engineering workflow in a collaborative development environment.',
-    tags: ['Angular', 'TypeScript', 'Engineering']
+    description: 'Help students learn testing, object-oriented design, debugging, and practical software development through labs, assignments, and direct support.',
+    tags: ['Java', 'JUnit', 'Mentoring']
   }
 ]
 
-export const skills = [
-  'TypeScript',
-  'Java',
-  'Python',
-  'C++',
-  'JavaScript',
-  'Swift',
-  'React',
-  'Next.js',
-  'Angular',
-  'Node.js',
-  'Fastify',
-  'PostgreSQL',
-  'MongoDB',
-  'AWS'
-]
-
-export const repertoire = [
-  'Rachmaninoff — Cello Sonata, I & III',
-  'Chopin — Berceuse, Op. 57',
-  'Rachmaninoff — Prelude, Op. 23 No. 4',
-  'Scriabin — Sonata No. 2, I',
-  'Scriabin — Étude, Op. 8 No. 12',
-  'Medtner — Tale, Op. 20 No. 1'
-]
+export const skills = ['TypeScript', 'Java', 'Python', 'C++', 'JavaScript', 'Swift', 'React', 'Next.js', 'Angular', 'Node.js', 'Fastify', 'PostgreSQL', 'MongoDB', 'AWS', 'Three.js']
