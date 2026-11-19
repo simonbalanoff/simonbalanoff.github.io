@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Which spacecraft data is worth keeping? | Simon Balanoff</title>
-  <meta name="description" content="A plain-language explanation of my spacecraft telemetry research: choosing what data to save, testing the results, and understanding the limits.">
+  <title>Preserving fault evidence under telemetry budgets | Simon Balanoff</title>
+  <meta name="description" content="A technical overview of causal telemetry retention: recorder design, serialized-byte budgets, frozen-receiver evaluation, component ablations, and cross-mission limitations.">
   <meta name="theme-color" content="#1b2936">
-  <meta property="og:title" content="Which spacecraft data is worth keeping? | Simon Balanoff">
-  <meta property="og:description" content="Spacecraft can collect more data than they can send. Here’s how I’m studying which measurements to keep, what I found, and what I still need to test.">
+  <meta property="og:title" content="Preserving fault evidence under telemetry budgets | Simon Balanoff">
+  <meta property="og:description" content="Research into causal telemetry retention under serialized-byte budgets, with reproducible mission replay, component ablations, and qualified development results.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://simonbalanoff.github.io/projects/telemetry.html">
   <meta property="og:image" content="https://simonbalanoff.github.io/assets/social-preview.png">
@@ -26,174 +26,164 @@
   <main id="main" class="wrap telemetry-writeup">
     <p class="breadcrumb"><a href="../projects.html">All projects</a></p>
     <header class="case-header">
-      <p class="eyebrow">Spacecraft telemetry research · A project walkthrough</p>
-      <h1>Which spacecraft data is worth keeping?</h1>
-      <p class="case-lead">A spacecraft can collect more measurements than it can send back. I’m studying how to choose what to keep, so that useful evidence is still there when someone needs to investigate a problem.</p>
-      <p class="reading-note">Written for readers without a background in spacecraft or data science. Technical details and original figures are included along the way.</p>
+      <p class="eyebrow">Independent research · Spacecraft telemetry retention</p>
+      <h1>Preserving fault evidence under telemetry budgets</h1>
+      <p class="case-lead">I’m investigating how a causal recorder can preserve original measurements and event context under a fixed transmission budget, so that downstream analysis still has useful evidence to work with.</p>
+      <p class="reading-note">Python · NumPy · pandas · Experimental evaluation</p>
     </header>
     <div class="case-layout">
       <nav class="case-toc" aria-label="On this page">
         <p>On this page</p>
-        <a href="#problem">The problem</a>
-        <a href="#recorder">How it works</a>
-        <a href="#testing">How I tested it</a>
-        <a href="#results">What I found</a>
-        <a href="#context">Why context matters</a>
-        <a href="#follow-up">The second mission</a>
-        <a href="#implementation">What I built</a>
-        <a href="#next">What comes next</a>
+        <a href="#problem">Research question</a>
+        <a href="#recorder">Recorder design</a>
+        <a href="#testing">Evaluation protocol</a>
+        <a href="#results">Mission1 results</a>
+        <a href="#context">Component ablations</a>
+        <a href="#follow-up">Mission2 follow-up</a>
+        <a href="#implementation">Implementation</a>
+        <a href="#next">Open questions</a>
         <a href="#resources">Paper & source code</a>
       </nav>
-      <article class="case-content" aria-label="Spacecraft telemetry research explained">
+      <article class="case-content" aria-label="Telemetry retention research overview">
         <section id="problem" aria-labelledby="problem-title">
-          <h2 id="problem-title">The problem: there isn’t room for everything</h2>
-          <p>Spacecraft use sensors to keep track of what is happening onboard. Their measurements might describe things such as temperature, voltage, or how a component is behaving. Sending those measurements to another location is called <strong>telemetry</strong>.</p>
-          <p>Those readings take up space. When the amount of data that can be stored or sent is limited, some measurements have to be left out. That creates a difficult question: which ones will matter later?</p>
-          <p>An <strong>anomaly</strong> is a reading or pattern that looks unusual. It might be evidence of a problem, but “unusual” does not automatically mean something has failed. An investigation needs enough information to work out what happened.</p>
-          <p>Imagine a temperature reading suddenly jumps. You might want to see whether it had been rising beforehand, whether other readings changed around the same time, and whether it returned to normal afterward. Keeping only the highest temperature would lose much of that story. This is an illustrative example, rather than a description of a specific event in my experiments.</p>
-          <p>My project asks: <strong>when you can’t keep everything, can you preserve the measurements that make a later investigation possible?</strong> I’m exploring that question by replaying archived spacecraft measurements in software. The recorder is a research prototype; it has not been deployed onboard a spacecraft.</p>
+          <h2 id="problem-title">Research question</h2>
+          <p>Limited storage and downlink capacity make telemetry retention a selection problem. A recorder has to decide which measurements to preserve before it knows which events will matter to a later investigation.</p>
+          <p>Uniform sampling provides broad coverage but can miss short events. Trigger-based capture can retain unusual measurements at low cost, while discarding the lead-up or behavior that its trigger does not recognize. Summary statistics reduce data volume but lose exact timestamps, sample order, or the original values.</p>
+          <p>My focus is <strong>preserving evidence under a byte budget</strong>: which original observations survive recording, whether a fixed downstream detector can still recognize event evidence, and how much surrounding context remains available.</p>
+          <p>The work uses archived spacecraft data and software replay. It is a research prototype, with no claim of onboard deployment or demonstrated physical fault diagnosis.</p>
         </section>
 
         <section id="recorder" aria-labelledby="recorder-title">
-          <h2 id="recorder-title">How the recorder chooses what to keep</h2>
-          <p>A simple approach is to keep one reading at regular intervals. That gives a reasonably spread-out picture, but a brief event can happen between the readings you save.</p>
-          <p>Another approach is to save readings only when something looks unusual. That can use very little space, but it relies on recognizing the interesting part at the right moment. It can also miss what happened before the change.</p>
-          <p>The recorder I’m testing combines three ideas:</p>
-          <ol class="recorder-explanation">
-            <li><h3>Keep a short rolling history</h3><p>The recorder temporarily holds a few recent measurements. As new readings arrive, older ones are replaced. If a change triggers recording, some of that recent history can be saved too. The technical name is a <strong>pre-trigger buffer</strong>.</p></li>
-            <li><h3>Capture around an unusual change</h3><p>A trigger looks for a sufficiently large change in the incoming measurements. When one appears, the recorder tries to save the triggering reading, the available lead-up, and a short period afterward, while staying inside its budget.</p></li>
-            <li><h3>Reserve room for ordinary measurements</h3><p>Some capacity is set aside for readings chosen without relying on the trigger. This <strong>background sampling</strong> helps preserve parts of the record that the trigger might overlook.</p></li>
-          </ol>
-          <p>The recorder sees readings in time order. It does not know in advance which moments will later be labeled as important. In research terms, it is <strong>causal</strong>: each decision uses information already available, rather than looking into the future.</p>
-          <p>The temporary history fits that rule. A reading from a few moments ago is already available when the trigger fires. A reading from tomorrow is not.</p>
+          <h2 id="recorder-title">A causal recorder with reserved background coverage</h2>
+          <p>The adaptive policy combines a bounded pre-trigger buffer, post-trigger capture, and a separate allocation for background sampling. Each component addresses a different way useful information can disappear:</p>
+          <ul>
+            <li><strong>Pre-trigger capture</strong> preserves recent observations that were already in memory when a trigger fires, retaining part of the event’s lead-up.</li>
+            <li><strong>Post-trigger capture</strong> retains a configured number of subsequent observations, subject to the remaining budget.</li>
+            <li><strong>Background reservation</strong> allocates capacity to time-stratified samples selected independently of anomaly scores, providing coverage outside triggered intervals.</li>
+          </ul>
+          <p>Capture decisions use only observations available at that point in the stream. Event annotations are never an input to the recorder, and future samples cannot change a finalized packet.</p>
+          <p>In the Mission1 study, the trigger uses the largest absolute first difference across the selected channels, normalized by training standard deviations. The threshold is six standard-deviation units; differences reset after gaps longer than 150 seconds. The recorder uses eight prior samples, four post-trigger samples, and a 20% background reservation rounded to whole records.</p>
+          <p>Each active reporting hour is a separate epoch with its own serialized-byte cap. Context and quotas reset at the epoch boundary, unused background capacity is not reclaimed, and capacity is not borrowed across epochs.</p>
           <details class="technical-detail">
-            <summary>A closer look at the recording budget</summary>
+            <summary>Packet format and budget enforcement</summary>
             <div>
-              <p>The main comparison below allows 1,024 bytes per active hour. A byte is a unit of digital storage. The cap includes the saved values and the information needed to interpret them, such as timestamps and record headers.</p>
-              <p>In the experimental format, a raw record holds one timestamp and six measurement values and takes 36 bytes. Each hourly packet also has a 32-byte header. A packet containing only raw records can therefore fit at most 27 of those records under this cap.</p>
-              <p>The recorder cannot borrow unused space from a future hour. This is a budget for the project’s encoded data format; it does not include all the overhead of a real spacecraft communication link, such as encryption or retransmissions.</p>
-              <p>In the Mission1 study, the configuration uses eight prior samples, four post-trigger samples, and a 20% reservation for background capture, rounded to whole records.</p>
+              <p>Every active reporting epoch emits a packet, including the header cost. A packet header uses 32 bytes. Each raw record uses 36 bytes: a four-byte prefix plus a timestamp and six binary32 measurement values. An extrema-summary record uses 64 bytes.</p>
+              <p>The encoder enforces <code>32 + 36 × raw records + 64 × summary records ≤ byte cap</code>. At 1,024 bytes, a raw-only packet can contain at most 27 observation records.</p>
+              <p>Timestamps, record tags, and measurement values all count toward the cap. Production link framing, encryption, acknowledgements, and retransmissions are outside this experimental format.</p>
             </div>
           </details>
         </section>
 
         <section id="testing" aria-labelledby="testing-title">
-          <h2 id="testing-title">How I tested whether the saved data was useful</h2>
-          <p>I used archived spacecraft measurements with annotations identifying known events. These annotations are like an answer key: they help evaluate the saved data, but the recorder never gets to see them while making its choices.</p>
-          <p>The first study uses a dataset called <strong>Mission1</strong>. It replays about 3.25 million observations from 2008–2010. Earlier measurements are used to establish a reference for what ordinary behavior looks like.</p>
-          <ol class="evaluation-flow" aria-label="Experiment sequence">
-            <li><strong>Replay the readings</strong><span>Feed the original measurements to each recording method in time order.</span></li>
-            <li><strong>Apply the budget</strong><span>Let each method select what to keep under the same hourly cap.</span></li>
-            <li><strong>Read back the saved files</strong><span>Check what actually survived, including its timestamps and values.</span></li>
-            <li><strong>Look for event evidence</strong><span>Run a fixed statistical check on the saved measurements.</span></li>
+          <h2 id="testing-title">Evaluation separates capture from downstream assessment</h2>
+          <p>The Mission1 development study replays <strong>3,248,700 original observations from 2008–2010</strong>. Calibration uses 8,713,221 eligible observations from before 2008, excluding annotated anomalies, rare events, and communication gaps in the selected channels.</p>
+          <p>I compare retention policies on the original synchronized observations, before aggregation or forward-fill. The study sweeps four hourly caps: 256, 512, 1,024, and 2,048 bytes. At each cap, every policy receives the same source stream and allowance. The experiment then evaluates what can actually be recovered from its encoded output:</p>
+          <ol class="evaluation-flow" aria-label="Evaluation pipeline">
+            <li><strong>Causal capture</strong><span>Select observations chronologically, without access to event annotations.</span></li>
+            <li><strong>Packet serialization</strong><span>Write the selected records and account for the complete encoded stream.</span></li>
+            <li><strong>Decode and verify</strong><span>Check recovered timestamps and value bits against the original observations.</span></li>
+            <li><strong>Frozen-receiver evaluation</strong><span>Measure event evidence and context using fixed downstream analysis.</span></li>
           </ol>
-          <p>That last check is important. Saving a reading near an event does not necessarily mean it still shows anything unusual. I want to know whether the saved values retain evidence that a separate analysis can recognize.</p>
-          <p>One check uses <strong>principal component analysis, or PCA</strong>. For this project, you can think of it as a statistical way to look for combinations of readings that differ from the patterns learned from earlier data. I use an existing technique rather than claiming to have invented a new anomaly detector.</p>
-          <p>The check is calibrated on the earlier data and then kept fixed across the recording methods. That way, the comparison changes what gets saved, rather than changing the analysis to favor each method.</p>
-          <p>I also check that saved timestamps and values match the originals. Filling a gap by repeating a previous value may make a graph look continuous, but that repeated value is not an observation that was actually preserved.</p>
+          <p>The receivers include a training-reference deviation check and a three-component <strong>principal component analysis (PCA) residual</strong> detector, which scores departures from the learned low-dimensional reference. Each receiver flags scores strictly above the 0.999 quantile of its eligible training scores. Calibration remains unchanged across retention policies.</p>
+          <p>Capture and receiver scores differ, although they share training normalization. This evaluates whether retained measurements remain useful to a distinct analysis; it does not establish fully independent modeling assumptions.</p>
+          <p>Forward-filled values never count as retained raw evidence. Extrema summaries are assessed separately because a bucket’s minimum or maximum is not an original timestamped sample suitable for the same raw-observation receivers.</p>
         </section>
 
         <section id="results" aria-labelledby="results-title">
-          <h2 id="results-title">What I found in the first study</h2>
-          <p>There were <strong>11 eligible validation events</strong> in the Mission1 comparison. An event counts in the table when at least one saved original measurement from that event still crosses the fixed PCA check’s threshold for unusual behavior.</p>
+          <h2 id="results-title">Mission1 results under a shared hourly cap</h2>
+          <p>The comparison includes <strong>11 eligible validation events</strong>. An event has retained PCA evidence when a saved original observation within its annotated interval still exceeds the frozen receiver’s threshold.</p>
           <div class="table-scroll" role="region" tabindex="0" aria-label="Mission1 results at a 1,024-byte cap per active hour">
             <table>
-              <caption>Mission1 results at a 1,024-byte cap per active hour</caption>
-              <thead><tr><th scope="col">Recording method</th><th scope="col">Total saved data</th><th scope="col">Events with retained evidence</th></tr></thead>
+              <caption>Mission1 validation · 1,024 bytes per active hour</caption>
+              <thead><tr><th scope="col">Capture policy</th><th scope="col">Encoded data</th><th scope="col">Events with PCA evidence</th></tr></thead>
               <tbody>
-                <tr><td>Regular-interval sampling</td><td>25.04 MiB</td><td>5 of 11</td></tr>
-                <tr><td>Trigger-only recording</td><td>0.81 MiB</td><td>10 of 11</td></tr>
-                <tr><td>Combined recorder</td><td>6.30 MiB</td><td>11 of 11</td></tr>
+                <tr><td>Uniform sampling</td><td>25.04 MiB</td><td>5 / 11</td></tr>
+                <tr><td>Reservoir sampling, ten seeds</td><td>25.15 MiB mean</td><td>5.1 / 11 mean</td></tr>
+                <tr><td>Randomized phase, ten seeds</td><td>24.96 MiB mean</td><td>5.4 / 11 mean</td></tr>
+                <tr><td>Threshold-only capture</td><td>0.81 MiB</td><td>10 / 11</td></tr>
+                <tr><td>Adaptive recorder</td><td>6.30 MiB</td><td>11 / 11</td></tr>
               </tbody>
             </table>
           </div>
-          <p class="source-note">MiB, or mebibytes, measures the total size of the encoded data. One MiB is 1,048,576 bytes. “Combined recorder” refers to the adaptive recorder described above.</p>
-          <p>In this comparison, the combined recorder retained evidence for all 11 events while saving about a quarter as much data as regular-interval sampling.</p>
-          <p><strong>All methods had the same maximum hourly allowance, but they did not spend the same amount.</strong> A trigger-only method can save very little when it rarely triggers. These results compare what the methods chose to save under a shared cap; they are not an equal-size comparison.</p>
-          <p>The result is encouraging for this particular study. It is also a small set of events. Preserving evidence for 11 known events does not tell us how well the method will work on unfamiliar faults or a different spacecraft.</p>
-          <p>The statistical check also flags some ordinary measurements. This event count does not establish a real-world false-alarm rate, or show that the software can explain the physical cause of a fault.</p>
+          <p>The adaptive recorder preserved PCA evidence for all 11 events at about one-quarter of uniform sampling’s encoded cost in this configuration. Threshold-only capture used substantially fewer bytes, but missed one event and retained no pre-event context in the native pilot.</p>
+          <p><strong>A shared cap does not mean equal actual expenditure.</strong> The table reports the data each policy chose to retain under the same hourly allowance. It should not be read as a comparison at a fixed total encoded size.</p>
+          <figure class="case-figure chart">
+            <a href="../assets/projects/telemetry-retention.svg" target="_blank" rel="noopener" aria-label="Open the original retention results figure at full size in a new tab"><img src="../assets/projects/telemetry-retention.svg" alt="Mission1 event evidence and pre-event context plotted against encoded cost for retention policies across four hourly caps" width="1008" height="403" loading="lazy"></a>
+            <figcaption>Event evidence and mean pre-event context versus encoded cost across four hourly caps. The full-archive reference is a calculated format cost, not a separately serialized comparison stream. <a href="../assets/projects/telemetry-retention.svg" target="_blank" rel="noopener">View full-size figure</a>.</figcaption>
+          </figure>
+          <p>The seeded comparisons address sensitivity to sampling alignment. Reservoir runs retained evidence for 4–7 events; randomized-phase runs retained 4–8. Those ranges describe variation in sampling the same events, rather than confidence intervals for performance on new faults.</p>
+          <p>These are validation development results on one mission. Event evidence is a positive statistical score on an annotated observation, not a verified physical diagnosis or a measure of event precision. The previously examined Mission1 test split is excluded from these studies.</p>
           <details class="technical-detail">
-            <summary>Other comparisons and the original results figure</summary>
+            <summary>Normal-positive observations and interpretation limits</summary>
             <div>
-              <p>A regularly spaced sample can happen to line up well or badly with a short event. To investigate that sensitivity, I also ran random sampling comparisons using ten different random seeds. A seed makes a particular random run repeatable.</p>
-              <p>At the same hourly cap, reservoir sampling retained evidence for an average of 5.1 of the 11 events, using 25.15 MiB on average. Randomized-phase sampling averaged 5.4 events and 24.96 MiB. The decimal event counts are averages across runs; each individual run still has a whole-number result.</p>
-              <p>Those repetitions explore different sampling choices on the same events. They do not tell us the uncertainty for a new population of faults.</p>
-              <figure class="case-figure chart">
-                <a href="../assets/projects/telemetry-retention.svg" target="_blank" rel="noopener" aria-label="Open the original retention results figure at full size in a new tab"><img src="../assets/projects/telemetry-retention.svg" alt="Two research plots showing event evidence and pre-event context against actual encoded data cost for different recording policies" width="1008" height="403" loading="lazy"></a>
-                <figcaption>The original figure includes several hourly caps. On the left, higher points mean evidence survived for more events. On the right, higher points mean more of the lead-up was preserved. Moving left means using less encoded data. The full-archive reference shows the calculated cost of keeping the source record in this format. <a href="../assets/projects/telemetry-retention.svg" target="_blank" rel="noopener">View full-size figure</a>.</figcaption>
-              </figure>
+              <p>At the 1,024-byte cap, the frozen PCA receiver also scores 1,848 normal observations above threshold in the adaptive stream, compared with 6,708 for uniform sampling and 12,425 on the full archive.</p>
+              <p>These are observation counts, not deduplicated alarm episodes. The policies retain different numbers of normal observations, so these counts do not establish a controlled operational false-alarm rate.</p>
             </div>
           </details>
         </section>
 
         <section id="context" aria-labelledby="context-title">
-          <h2 id="context-title">Why the lead-up matters</h2>
-          <p>Finding one unusual reading and understanding what happened around it are different goals.</p>
-          <p>To see what each part of the recorder contributed, I ran experiments with individual parts removed. This is called an <strong>ablation study</strong>: change one component, then check what happens.</p>
-          <p>When I removed the pre-trigger history, the saved data still retained PCA evidence for all 11 events. If that were the only score I looked at, the history would seem unnecessary.</p>
-          <p>But the amount of available lead-up preserved fell from <strong>64.3% to 1.8%</strong>. That measure looks at the original observations available in the five minutes before an event, averaged across the events.</p>
-          <p>So the recorder could still preserve a sign that something unusual occurred while losing almost everything that came before it. That is why I measure context separately. An eventual investigator may need the lead-up to make sense of the event, although this study has not established how much that improves a real diagnosis.</p>
-          <p>Removing background sampling reduced the event-evidence count to 10 of 11 while using fewer bytes. Removing post-trigger capture made little difference to these headline measures. Its diagnostic benefit still needs to be demonstrated.</p>
+          <h2 id="context-title">Component ablations expose context loss</h2>
+          <p>I ran paired component-removal experiments to separate the contribution of pre-trigger history, background reservation, and post-trigger capture.</p>
+          <p>Removing pre-trigger capture still preserves PCA evidence for <strong>11/11 events</strong>, but reduces mean pre-event context coverage from <strong>64.3% to 1.8%</strong>. Context coverage measures the fraction of available eligible source observations retained during the 300 seconds before each event’s original onset.</p>
+          <p>That distinction matters for evaluation: a policy can preserve a point of detectable evidence while losing nearly all of the preceding trajectory. Event-level retention alone does not describe the record available for investigation.</p>
+          <p>Removing background reservation reduces PCA evidence to 10/11 events while using fewer bytes. Removing post-trigger capture has little effect on these headline metrics; its diagnostic benefit has not been demonstrated.</p>
+          <p>The ablations support measuring context separately from event evidence. Whether that retained context improves an engineer’s diagnosis remains an open empirical question.</p>
         </section>
 
         <section id="follow-up" aria-labelledby="follow-up-title">
-          <h2 id="follow-up-title">What happened when I tried a second mission</h2>
-          <p>A method can look good on data you have already worked with and perform differently somewhere else. I therefore set up a follow-up using another dataset, called <strong>Mission2</strong>.</p>
-          <p>Before evaluating it, I recorded the selected sensor channels, time periods, settings, and main comparison. I carried the retention settings over from Mission1 rather than adjusting them after seeing the new results.</p>
-          <p>There was an important limitation: <strong>the selected Mission2 data contained no eligible anomaly events under the study’s rules.</strong> It had annotations for rare events, but those did not qualify as faults for this evaluation.</p>
-          <p>That means I could not answer the main question of whether the method preserved fault evidence on a second mission. There was no set of qualifying faults to measure against. I kept that outcome in the record rather than choosing another group after seeing it.</p>
-          <p>The follow-up did reveal something narrower. Some analyses need two consecutive measurements to examine how a signal changes. A background method that deliberately kept pairs provided 45,935 usable consecutive inputs, while the single-reading background method provided none, at nearly the same encoded cost.</p>
-          <p>That tells me about the availability of inputs for that analysis. It does not show that a fault was recovered or diagnosed. It also illustrates why there may be no single best way to save data: the useful measurements depend partly on the question someone will ask afterward.</p>
-          <details class="technical-detail">
-            <summary>The follow-up figure and its limits</summary>
-            <div>
-              <figure class="case-figure chart">
-                <a href="../assets/projects/telemetry-receivers.svg" target="_blank" rel="noopener" aria-label="Open the receiver requirements research figure at full size in a new tab"><img src="../assets/projects/telemetry-receivers.svg" alt="Research figure comparing evidence available to different statistical analyses on Mission1 and consecutive-input availability on Mission2" width="1048" height="439" loading="lazy"></a>
-                <figcaption>The figure compares what different downstream analyses can use. Mission2’s consecutive-input count is an input-availability result; its selected data has no eligible anomaly events, so fault recovery cannot be scored. <a href="../assets/projects/telemetry-receivers.svg" target="_blank" rel="noopener">View full-size figure</a>.</figcaption>
-              </figure>
-              <p>The follow-up completed 148 recording configurations and 36 temporal assessments. The paired method retained 45,935 of 3,675,508 full-source usable transitions, or 1.25%. The paired and single-reading streams differed by 36 encoded bytes.</p>
-              <p>The study plan is preserved in the repository’s Git history. It was not a third-party preregistration.</p>
-            </div>
-          </details>
+          <h2 id="follow-up-title">Mission2 follow-up and receiver requirements</h2>
+          <p>For the independent-mission attempt, I recorded the channel selection, splits, implementation, and primary comparison before evaluation. Retention settings transfer unchanged from Mission1, while receivers calibrate on eligible Mission2 training data.</p>
+          <p>The selected six-channel subset contains rare-event annotations but <strong>zero eligible anomaly events under the fixed protocol</strong>. All 148 capture configurations and 36 temporal assessments completed, but the primary fault-retention comparison is uninformative. Recall is unavailable, rather than zero or perfect.</p>
+          <p>The original selection and outcome remain in the record. I did not substitute another channel group after inspecting the annotations. The protocol is documented in local Git history, not a third-party preregistration.</p>
+          <h3>Input availability is a separate result</h3>
+          <p>The primary contrast compares paired versus singleton background capture with triggering disabled, using a first-order autoregressive receiver, AR(1). That receiver requires consecutive original measurements.</p>
+          <p>Paired background retained <strong>45,935 usable consecutive inputs</strong>, compared with zero for singleton background at nearly identical encoded cost. This is 1.25% of the 3,675,508 usable full-source transitions; the two streams differ by 36 encoded bytes. It measures input availability, not fault recovery.</p>
+          <h3>The downstream analysis changes what evidence is useful</h3>
+          <p>A separate Mission1 detector-mismatch study illustrates the same issue: trigger-disabled background capture retains evidence for 4/11 events under PCA but 0/11 under a forecasting receiver. An exploratory adjacent-pair control retains forecasting evidence for 2/11 events.</p>
+          <p>These results expose a representation mismatch. A recorder that preserves isolated points may leave an analysis requiring temporal relationships with no usable inputs. They do not establish a generally optimal capture policy.</p>
+          <figure class="case-figure chart">
+            <a href="../assets/projects/telemetry-receivers.svg" target="_blank" rel="noopener" aria-label="Open the receiver requirements figure at full size in a new tab"><img src="../assets/projects/telemetry-receivers.svg" alt="Mission1 receiver-dependent event evidence and Mission2 retained temporal input availability" width="1048" height="439" loading="lazy"></a>
+            <figcaption>Receiver-dependent evidence on Mission1 and temporal-input availability on Mission2. Mission2 has no eligible anomaly events, so its input counts cannot establish cross-mission fault retention. <a href="../assets/projects/telemetry-receivers.svg" target="_blank" rel="noopener">View full-size figure</a>.</figcaption>
+          </figure>
         </section>
 
         <section id="implementation" aria-labelledby="implementation-title">
-          <h2 id="implementation-title">What I built</h2>
-          <p>The project is a Python research pipeline. I use NumPy for numerical calculations and pandas for working with the data.</p>
-          <p>The implementation includes:</p>
+          <h2 id="implementation-title">Implementation and reproducibility</h2>
+          <p>The research pipeline is implemented in Python with NumPy and pandas. Its main components are:</p>
           <ul>
-            <li><strong>Recording policies</strong> that decide which original observations to retain under the budget.</li>
-            <li><strong>An encoder and decoder</strong> that write selected observations into packet files and read them back, so the experiment measures actual saved data.</li>
-            <li><strong>Replay and evaluation tools</strong> that run the comparisons, check retained values against the source, and measure event evidence and context.</li>
-            <li><strong>Reproducible reports</strong> with settings, per-event results, and file hashes. A hash acts as a fingerprint so someone can check that they are using the same input or output file.</li>
-            <li><strong>Tests and a technical report</strong> documenting the implementation, experiments, and limitations.</li>
+            <li><strong>Capture policies:</strong> uniform, threshold-only, adaptive, reservoir, and randomized-phase selection, with separate extrema-summary evaluation.</li>
+            <li><strong>Packet encoding and validation:</strong> explicit record costs, budget enforcement, and decoding checks against original timestamp and value bits.</li>
+            <li><strong>Mission replay and assessment:</strong> training-only calibration, fixed event denominators, retained-context metrics, and downstream receiver evaluation.</li>
+            <li><strong>Experiment records:</strong> configurations, per-event outcomes, normal-positive counts, source and implementation hashes, and encoded-stream identities.</li>
+            <li><strong>Software checks and reporting:</strong> tests, generated figures and tables, and a technical report documenting the methods and qualifications.</li>
           </ul>
-          <p>Keeping this record matters because a favorable table is only useful if someone can trace how it was produced. The repository includes reproduction instructions and small reports; the large source data and generated packet streams are handled separately.</p>
+          <p>Small reports and reproduction instructions are committed to the repository. Large source datasets and generated packet streams remain outside Git. Hash checks identify the exact inputs and implementation behind a result.</p>
+          <p>The recorder’s retained record count and rolling history are bounded by configuration. This is not a measured Python process-memory bound or a guarantee about embedded resource use.</p>
         </section>
 
         <section id="next" aria-labelledby="next-title">
-          <h2 id="next-title">What I still need to find out</h2>
-          <p>The current results suggest that choosing measurements around changes, while reserving ordinary background data, is worth investigating further. They leave several practical questions open:</p>
+          <h2 id="next-title">Open questions</h2>
+          <p>The current work supports further evaluation of causal retention with context and background coverage. The next steps are:</p>
           <ul>
-            <li><strong>Does it work on new faults?</strong> A useful next study needs independently selected data with qualifying anomaly events.</li>
-            <li><strong>How does it compare with stronger alternatives?</strong> Regular and random sampling are useful references, but they are not the whole set of existing recording methods.</li>
-            <li><strong>Does the saved context help an engineer explain a fault?</strong> Retained statistical evidence and successful physical diagnosis are separate things to evaluate.</li>
-            <li><strong>Would it work under real operating constraints?</strong> Processing time, memory use, communication delays, lost packets, and additional link overhead all need engineering assessment.</li>
+            <li><strong>Independent fault-retention evaluation:</strong> qualify anomaly-label coverage before selecting a new evaluation subset, or use a representation covering the complete intended target set.</li>
+            <li><strong>Stronger comparisons:</strong> evaluate established adaptive alternatives and additional trigger/receiver combinations across budgets.</li>
+            <li><strong>Diagnostic utility:</strong> define an engineering assessment that connects retained evidence and context to successful fault investigation.</li>
+            <li><strong>Operational constraints:</strong> measure processing time and memory use, and account for communication schedules, latency, loss, and link overhead.</li>
           </ul>
-          <p>For now, this is a study of what information survives a recording decision. The part I find interesting is that a small event count can hide a much larger loss of context. Looking at both changes how I judge whether a recorder is useful.</p>
+          <p>The main lesson so far is that event retention, context coverage, and receiver compatibility need separate measurements. A favorable event count can conceal substantial information loss.</p>
         </section>
 
         <section id="resources" aria-labelledby="resources-title">
-          <h2 id="resources-title">If you’d like to go further</h2>
-          <p>The technical report contains the full methods and qualifications. The repository includes source code, experimental settings, results, and instructions for repeating the work.</p>
+          <h2 id="resources-title">Paper, results, and source code</h2>
+          <p>The technical report and repository contain the full methods, experiment settings, per-event results, and reproduction instructions.</p>
           <ul>
-            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine/blob/main/paper/draft.pdf">Read the technical report</a></li>
-            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine/blob/main/docs/results/native-retention.md">See the Mission1 study and exact measurements</a></li>
-            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine/blob/main/docs/results/ablation-retention.md">See the component-removal experiments</a></li>
-            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine/blob/main/docs/results/mission2-study.md">Read the Mission2 follow-up</a></li>
-            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine">Browse the source code and reproduction guide</a></li>
+            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine/blob/main/paper/draft.pdf">Technical report</a></li>
+            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine/blob/main/docs/results/native-retention.md">Native Mission1 retention study</a></li>
+            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine/blob/main/docs/results/ablation-retention.md">Component ablations</a></li>
+            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine/blob/main/docs/results/mission2-study.md">Mission2 follow-up and qualifications</a></li>
+            <li><a href="https://github.com/simonbalanoff/telemetry-anomaly-engine">Source code and reproduction guide</a></li>
           </ul>
-          <p class="source-note">This walkthrough describes the development studies documented in the project repository. Examples used to explain the ideas are identified separately from measured results.</p>
         </section>
       </article>
     </div>
