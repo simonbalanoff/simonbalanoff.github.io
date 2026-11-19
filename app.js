@@ -21,12 +21,20 @@ document.querySelectorAll('.case-toc').forEach(navigation => {
     if (window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
       active = entries.at(-1);
     }
-    if (active === current) return;
-    current = active;
-    entries.forEach(entry => {
-      if (entry === active) entry.link.setAttribute('aria-current', 'location');
-      else entry.link.removeAttribute('aria-current');
-    });
+    if (active !== current) {
+      current = active;
+      entries.forEach(entry => {
+        if (entry === active) entry.link.setAttribute('aria-current', 'location');
+        else entry.link.removeAttribute('aria-current');
+      });
+    }
+    // Scroll only the sidebar when its active link is outside a short window.
+    if (getComputedStyle(navigation).position === 'sticky') {
+      const bounds = navigation.getBoundingClientRect();
+      const linkBounds = active.link.getBoundingClientRect();
+      if (linkBounds.top < bounds.top) navigation.scrollTop -= bounds.top - linkBounds.top;
+      else if (linkBounds.bottom > bounds.bottom) navigation.scrollTop += linkBounds.bottom - bounds.bottom;
+    }
   }
 
   function scheduleUpdate() {

@@ -1,6 +1,6 @@
 # Simon Balanoff — Software Engineering Portfolio
 
-Professional portfolio built with static HTML, CSS, and JavaScript for GitHub Pages. The homepage leads with engineering experience and presents Biddly alongside research, simulation, and developer-tool projects. Five dedicated case studies provide implementation details and documented results.
+Professional portfolio built with static HTML, CSS, and JavaScript for GitHub Pages. The homepage leads with engineering experience and presents Biddly alongside research, simulation, and developer-tool projects. Five dedicated project pages provide implementation details and documented results. Telemetry research and the rocket simulator lead the project order.
 
 ## Development
 
@@ -15,7 +15,8 @@ Visit http://127.0.0.1:5173. `npm run dev` builds and serves `dist/`; rerun the 
 
 ## Content and structure
 
-- `index.html`: introduction, experience, projects, education, leadership, and contact.
+- `index.html`: introduction, experience, education and leadership, selected projects, and contact.
+- `projects.html`: a single-page directory listing all five projects, linked from the top navigation.
 - `projects/*.html`: shareable case studies with technical decisions, project evidence, and source links.
 - `styles.css`: shared typography, homepage, project layouts, and responsive styles.
 - `resume.html`, `resume-viewer.js`, `resume.css`: custom PDF viewer with selectable text, clickable document links, zoom, fit-to-width, and full-page controls. The default desktop reading width is 920px. Only blank outer margins are trimmed in the on-screen presentation, with padding retained around all visible content; the original PDF is unchanged. Single-page navigation is hidden. The viewer’s project links point to public case studies instead of private or outdated source URLs. Replace `assets/simon_balanoff_resume.pdf` to update the document.
@@ -32,4 +33,4 @@ See [PROJECT_SOURCES.md](PROJECT_SOURCES.md) for the original asset locations. B
 
 ## Verification
 
-Before deployment, build the site and check internal links, image loading, keyboard navigation, responsive layouts, PDF rendering, and video playback. The revised pages were checked in Chrome at desktop, tablet, and phone widths, with automated WCAG A/AA checks using axe.
+Before deployment, build the site and check internal links, image loading, keyboard navigation, responsive layouts, PDF rendering, and video playback. The revised pages were checked in Chrome at desktop, tablet, and phone widths (320–1440px), with automated WCAG A/AA checks using axe. Checks include internal links, project order, the short-window sidebar, expanded article details, resume sizing, and simulator video playback.

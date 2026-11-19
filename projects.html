@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects | Simon Balanoff</title>
+  <meta name="description" content="Explore Simon Balanoff’s software projects, including full-stack applications, spacecraft telemetry research, autonomous simulation, and developer tools.">
+  <meta name="theme-color" content="#1b2936">
+  <meta property="og:title" content="Projects | Simon Balanoff">
+  <meta property="og:description" content="Applications, research, and developer tools I’ve been working on, with write-ups and implementation details.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://simonbalanoff.github.io/projects.html">
+  <meta property="og:image" content="https://simonbalanoff.github.io/assets/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://simonbalanoff.github.io/projects.html">
+  <link rel="icon" href="assets/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="header wrap">
+    <a class="wordmark" href="index.html">Simon Balanoff</a>
+    <nav aria-label="Main navigation"><a href="index.html#experience">Experience</a><a href="index.html#about">Education</a><a href="projects.html" aria-current="page">Projects</a><a href="index.html#contact">Contact</a><a class="resume-link" href="resume.html">View resume</a></nav>
+  </header>
+  <main id="main" class="wrap project-directory">
+    <div class="project-directory-header"><h1>Projects</h1><p>Applications, research, and developer tools I’ve worked on. Each project has a write-up explaining the ideas and implementation.</p></div>
+    <section class="project-directory-list" aria-label="All projects">
+      <article><a class="project-directory-entry" href="projects/telemetry.html">
+        <img class="directory-thumbnail directory-chart" src="assets/projects/telemetry-retention.svg" alt="" width="1008" height="403">
+        <div><p class="eyebrow">Independent research</p><h2>Spacecraft telemetry retention</h2><p class="directory-description">Investigating which original measurements to preserve under a fixed transmission budget, with reproducible experiments and explicit evaluation limits.</p><p class="project-tech">Python · NumPy · pandas · Experimental evaluation</p></div>
+        <span class="directory-action">Read write-up</span>
+      </a></article>
+      <article><a class="project-directory-entry" href="projects/rocket-simulator.html">
+        <img class="directory-thumbnail" src="assets/projects/rocket-poster.webp" alt="" width="1920" height="1080" loading="lazy">
+        <div><p class="eyebrow">Physics & control systems</p><h2>Autonomous rocket landing</h2><p class="directory-description">A 2D simulator combining Kalman-filtered state estimation, multi-phase guidance, and feedback control to attempt a propulsive landing.</p><p class="project-tech">Python · Pygame · Pymunk · NumPy</p></div>
+        <span class="directory-action">Read write-up</span>
+      </a></article>
+      <article><a class="project-directory-entry" href="projects/biddly.html">
+        <img class="directory-thumbnail" src="assets/projects/biddly-dashboard.png" alt="" width="2560" height="2120">
+        <div><p class="eyebrow">Full-stack engineering</p><h2>Biddly recruitment platform</h2><p class="directory-description">A multi-tenant application with server-enforced chapter permissions, shared API contracts, configurable workflows, and automated browser checks.</p><p class="project-tech">TypeScript · Next.js · Fastify · PostgreSQL · Prisma</p></div>
+        <span class="directory-action">Read write-up</span>
+      </a></article>
+      <article><a class="project-directory-entry" href="projects/uml-visualizer.html">
+        <img class="directory-thumbnail" src="assets/projects/uml-demo.png" alt="" width="1706" height="1532" loading="lazy">
+        <div><p class="eyebrow">Developer tooling</p><h2>UML Visualizer</h2><p class="directory-description">A Java source-analysis tool that generates interactive class diagrams with relationship highlighting, graph navigation, and member inspection.</p><p class="project-tech">Java · JavaParser · Java2D/Swing · Picocli</p></div>
+        <span class="directory-action">Read write-up</span>
+      </a></article>
+      <article><a class="project-directory-entry" href="projects/study-bank.html">
+        <img class="directory-thumbnail" src="assets/projects/study-library.png" alt="" width="3024" height="1288" loading="lazy">
+        <div><p class="eyebrow">Community software</p><h2>Colorado Gamma Study Bank</h2><p class="directory-description">An invite-only academic library with PDF previews, private document storage, and moderation.</p><p class="project-tech">React · Express · MongoDB · Cloudflare R2</p></div>
+        <span class="directory-action">Read write-up</span>
+      </a></article>
+    </section>
+    <p class="directory-end">You can find more of my work on <a href="https://github.com/simonbalanoff">GitHub</a>.</p>
+  </main>
+  <footer class="footer wrap"><p>© <span data-year>2026</span> Simon Balanoff</p><a href="index.html#contact">Contact</a></footer>
+</body>
+</html>

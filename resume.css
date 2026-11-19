@@ -37,4 +37,4 @@ html:has(.resume-viewer-page){background:#e9edf1}
 @media(max-width:1000px){.resume-owner span{display:none}.resume-identity{gap:20px}.resume-header{padding-inline:18px;gap:16px}.document-toolbar{gap:10px}}
 @media(max-width:720px){.resume-header{flex-direction:column;align-items:stretch;gap:8px;padding:8px 14px}.resume-identity{justify-content:space-between;gap:16px}.resume-owner{font-size:.875rem}.portfolio-link{font-size:.875rem}.document-toolbar{justify-content:center;gap:12px;flex-wrap:wrap}.document-toolbar .zoom-button{width:38px;min-width:38px}.document-sizing button{padding-inline:12px}.resume-viewer-main{margin-top:12px}.document-stage{padding-inline:12px}.document-navigation{width:100%;justify-content:center;padding:0;border:0}}
 @media(prefers-reduced-motion:reduce){.resume-viewer-page{scroll-behavior:auto}}
-@media(max-width:360px){.document-toolbar{gap:8px}#zoom-level{min-width:44px}.document-sizing button{padding-inline:9px}}
+@media(max-width:360px){.document-toolbar{gap:4px}#zoom-level{min-width:40px}.document-sizing button{padding-inline:8px}}
