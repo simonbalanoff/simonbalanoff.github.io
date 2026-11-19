@@ -1,0 +1,14 @@
+import { mkdir, copyFile, cp, rm } from 'node:fs/promises';
+await rm('dist', { recursive: true, force: true });
+await mkdir('dist', { recursive: true });
+for (const file of ['index.html', 'resume.html', 'styles.css', 'app.js', 'resume-viewer.js', 'resume.css', '404.html', 'robots.txt', 'sitemap.xml']) await copyFile(file, `dist/${file}`);
+await cp('assets', 'dist/assets', { recursive: true });
+await cp('projects', 'dist/projects', { recursive: true });
+await rm('vendor/pdfjs', { recursive: true, force: true });
+await mkdir('vendor/pdfjs', { recursive: true });
+for (const file of ['pdf', 'pdf.worker']) await copyFile(`node_modules/pdfjs-dist/build/${file}.mjs`, `vendor/pdfjs/${file}.js`);
+await copyFile('node_modules/pdfjs-dist/web/pdf_viewer.css', 'vendor/pdfjs/pdf_viewer.css');
+await copyFile('node_modules/pdfjs-dist/LICENSE', 'vendor/pdfjs/LICENSE');
+for (const directory of ['cmaps', 'standard_fonts', 'wasm']) await cp(`node_modules/pdfjs-dist/${directory}`, `vendor/pdfjs/${directory}`, { recursive: true });
+await cp('vendor', 'dist/vendor', { recursive: true });
+console.log('Built static portfolio in dist/');

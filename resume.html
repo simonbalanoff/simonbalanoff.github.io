@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resume | Simon Balanoff</title>
+  <meta name="description" content="View Simon Balanoff’s software engineering resume, including experience, education, and projects.">
+  <meta name="theme-color" content="#e9edf1">
+  <meta property="og:title" content="Resume | Simon Balanoff">
+  <meta property="og:description" content="Software engineering experience, education, and projects.">
+  <meta property="og:image" content="https://simonbalanoff.github.io/assets/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://simonbalanoff.github.io/resume.html">
+  <link rel="icon" href="assets/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="vendor/pdfjs/pdf_viewer.css">
+  <link rel="stylesheet" href="resume.css">
+  <script type="module" src="resume-viewer.js"></script>
+</head>
+<body class="resume-viewer-page">
+  <a class="skip-link" href="#resume-document">Skip to resume</a>
+  <header class="resume-header">
+    <div class="resume-identity">
+      <a class="resume-owner" href="index.html">Simon Balanoff <span>Resume</span></a>
+      <a class="portfolio-link" href="index.html">Back to portfolio</a>
+    </div>
+    <div class="document-toolbar" role="group" aria-label="Resume viewing controls">
+      <div class="document-navigation" id="page-navigation" role="group" aria-label="Page navigation" hidden>
+        <button id="previous-page" aria-label="Previous page" disabled>Previous</button>
+        <span id="page-count">Page — of —</span>
+        <button id="next-page" aria-label="Next page" disabled>Next</button>
+      </div>
+      <div class="document-zoom" role="group" aria-label="Zoom">
+        <button id="zoom-out" class="zoom-button" aria-label="Zoom out" title="Zoom out" disabled>−</button>
+        <output id="zoom-level" aria-label="Zoom level">—</output>
+        <button id="zoom-in" class="zoom-button" aria-label="Zoom in" title="Zoom in" disabled>+</button>
+      </div>
+      <div class="document-sizing" role="group" aria-label="Page size">
+        <button id="fit-width" aria-pressed="true" title="Use a comfortable reading width" disabled>Fit width</button>
+        <button id="fit-page" aria-pressed="false" title="Show the entire resume at once" disabled>Full page</button>
+      </div>
+    </div>
+  </header>
+  <main class="resume-viewer-main" id="resume-document">
+    <h1 class="visually-hidden">Simon Balanoff — Resume</h1>
+    <section class="document-viewer" aria-label="Resume document viewer">
+      <p id="viewer-status" class="viewer-status" role="status" aria-live="polite">Loading resume…</p>
+      <div class="document-stage" id="document-stage" tabindex="0" aria-busy="true" aria-label="Resume document. Scroll the page to read. Use the toolbar to zoom or show the full page.">
+        <div id="document-page" class="document-page"></div>
+      </div>
+      <noscript><p class="viewer-status">Enable JavaScript to view the resume on this page.</p></noscript>
+    </section>
+  </main>
+</body>
+</html>
