@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#192b3a"/><text x="32" y="42" text-anchor="middle" fill="#f4f6f1" font-family="monospace" font-size="29" font-weight="bold">sb</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Simon Balanoff — SB monogram</title>
+  <rect width="64" height="64" rx="13" fill="#1b2936"/>
+  <g fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="square" stroke-linejoin="round">
+    <path d="M27 18H18a7 7 0 0 0 0 14h3a7 7 0 0 1 0 14H11"/>
+    <path d="M36 46V18h8a7 7 0 0 1 0 14h-8m8 0a7 7 0 0 1 0 14h-8"/>
+  </g>
+</svg>
